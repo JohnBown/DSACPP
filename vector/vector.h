@@ -11,9 +11,12 @@ template <typename T> class Vector { //向量模版类
     T *_elem;                                    //数据区
     void copyFrom(T const *A, Rank lo, Rank hi); //复制数组区间[lo, hi)
     void expand();                               //空间不足时扩容
-    void shrink();                     //(装填因子: _size / _capacity)过小时压缩向量所占空间
-    Rank bubble(Rank lo, Rank hi);     //扫描交换
-    void bubbleSort(Rank lo, Rank hi); //起泡排序算法
+    void shrink();                        //(装填因子: _size / _capacity)过小时压缩向量所占空间
+    Rank bubble(Rank lo, Rank hi);        //扫描交换
+    void bubbleSort(Rank lo, Rank hi);    //起泡排序算法
+    Rank max(Rank lo, Rank hi);           //选取最大元素
+    void selectionSort(Rank lo, Rank hi); //选择排序算法
+    void insertionSort(Rank lo, Rank hi); //插入排序算法
     void merge(Rank lo, Rank mi, Rank hi); // 归并算法
     void mergeSort(Rank lo, Rank hi);      //归并排序算法
 
@@ -221,9 +224,36 @@ template <typename T> Rank Vector<T>::bubble(Rank lo, Rank hi) {
     return last; //返回最右侧逆序对的秩
 }
 
-template <typename T> void Vector<T>::bubbleSort(Rank lo, Rank hi) {
+template <typename T> void Vector<T>::bubbleSort(Rank lo, Rank hi) { //向量冒泡排序算法
     while (lo < (hi = bubble(lo, hi))) {
     } //如果数组后缀部分有序，那么只迭代无序部分，即[lo, last]
+}
+
+template <typename T> Rank Vector<T>::max(Rank lo, Rank hi) { //在[lo, hi]找出最大值
+    Rank mx = hi;
+    while (lo < hi--) {            //逆向扫描
+        if (_elem[mx] < _elem[hi]) //且严格比较
+            mx = hi;               //故在max有多个时保证后者优先
+    }                              //进而保证selectoniSort稳定
+    return mx;
+}
+
+template <typename T> void Vector<T>::selectionSort(Rank lo, Rank hi) { //向量选择排序算法
+    while (lo < --hi) {
+        swap(_elem[max(lo, hi)], _elem[hi]);
+    }
+}
+
+template <typename T> void Vector<T>::insertionSort(Rank lo, Rank hi) { //向量插入排序算法
+    for (int i = lo; i < hi; i++) {             //在区间[lo, hi)上，正向进行迭代
+        T key = _elem[i];                       //取出此轮插入的元素，防止覆盖
+        int j = i - 1;                          //索引j从右向左依次进行比较
+        while ((j >= lo) && (_elem[j] > key)) { //保证稳定性，查找出不大于key的最大位置
+            _elem[j + 1] = _elem[j];            //还未查找成功
+            j--;                                //向右平移你覆盖
+        }
+        _elem[j + 1] = key; //找到时插入key，key为最小值，插入lo的位置
+    }
 }
 
 template <typename T> void Vector<T>::merge(Rank lo, Rank mi, Rank hi) {
@@ -257,7 +287,9 @@ template <typename T> void Vector<T>::mergeSort(Rank lo, Rank hi) {
 
 template <typename T> void Vector<T>::sort(Rank lo, Rank hi) {
     return bubbleSort(lo, hi); //起泡排序算法
-    return mergeSort(lo, hi);  //归并排序算法
+    // return mergeSort(lo, hi);     //归并排序算法
+    // return selectionSort(lo, hi); //选择排序算法
+    // return insertionSort(lo, hi); //插入排序算法
 }
 
 #endif
