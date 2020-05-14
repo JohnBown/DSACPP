@@ -12,7 +12,9 @@ template <typename T> class List {
   protected:
     void init();
     int clear();
-    void copyNode(ListNodePosi(T), int);      //复制列表中自位置p起n项
+    void copyNode(ListNodePosi(T), int);                                   //复制列表中自位置p起n项
+    void merge(ListNodePosi(T) &, int, List<T> &, ListNodePosi(T) &, int); //归并
+    void mergeSort(ListNodePosi(T) &, int);   //对从p开始连续n个节点归并排序
     void selectionSort(ListNodePosi(T), int); //对从p开始连续n个节点选择排序
     void insertionSort(ListNodePosi(T), int); //对从p开始连续n个节点插入排序
 
@@ -180,9 +182,39 @@ template <typename T> void List<T>::insertionSort(ListNodePosi(T) p, int n) { //
     }
 }
 
+template <typename T> //有序列表的归并：当前列表中自p起n个元素，与当前列表中自q起m个元素
+void List<T>::merge(ListNodePosi(T) & p, int n, List<T> &L, ListNodePosi(T) & q, int m) {
+    ListNodePosi(T) pp = p->pred;              //借助p的前驱，方便最后找回p
+    while (0 < m) {                            //在q尚未移出区间之前
+        if ((0 < n) && (p->data <= q->data)) { // p也未移出区间，且L[p] <= L[q]
+            if (q == (p = p->succ))            // p归入合并列表，并替换为其直接后继
+                break;
+            n--;
+        } else {                                       //若已超出右界或L[q] < L[p]
+            insertB(p, L.remove((q = q->succ)->pred)); //将q转移至p之前
+            m--;
+        }
+    }
+    p = pp->succ; //确定归并后区间的（新）起点
+}
+
+template <typename T> void List<T>::mergeSort(ListNodePosi(T) & p, int n) { //列表归并排序算法
+    if (n < 2) //若待排序范围足够小，则直接返回
+        return;
+    int m = n >> 1;        //以中心为界
+    ListNodePosi(T) q = p; //均分列表
+    for (int i = 0; i < m; i++) {
+        q = q->succ;
+    }
+    mergeSort(p, m);              //对前子序列归并排序
+    mergeSort(q, n - m);          //对后子序列归并排序
+    merge(p, m, *this, q, n - m); //归并
+} //排序后，p依然指向归并后区间的（新）起点
+
 template <typename T> void List<T>::sort(ListNodePosi(T) p, int n) { //列表区间排序
     return selectionSort(p, n);
     // return insertionSort(p, n);s
+    // return mergeSort(p, n);
 }
 
 template <typename T> int List<T>::deduplicate() { //剔除无序列表中的重复节点
