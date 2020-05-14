@@ -251,7 +251,6 @@ template <typename T> int List<T>::uniquify() { //成批剔除重复元素，效
 template <typename T> void List<T>::reverse() { //前后倒置。共计三种实现方式，采用了较复杂的其一
     if (_size < 2)                              //平凡情况
         return;
-
     ListNodePosi(T) p;
     ListNodePosi(T) q;
     for (p = header, q = p->succ; p != trailer; p = q, q = p->succ) {
