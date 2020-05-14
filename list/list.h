@@ -48,6 +48,7 @@ template <typename T> class List {
     void sort() { sort(first, _size); }                     //列表整体排序
     int deduplicate();                                      //无序去重
     int uniquify();                                         //有序去重
+    void reverse();                                         //前后倒置
 };
 
 template <typename T> void List<T>::init() { //列表初始化，列表创建时调用
@@ -244,6 +245,24 @@ template <typename T> int List<T>::uniquify() { //成批剔除重复元素，效
         }
     }
     return oldSize - _size; //列表规模变化量，既被删除元素总数
+}
+
+#include "vector/vector.h"
+template <typename T> void List<T>::reverse() { //前后倒置。共计三种实现方式，采用了较复杂的其一
+    if (_size < 2)                              //平凡情况
+        return;
+
+    ListNodePosi(T) p;
+    ListNodePosi(T) q;
+    for (p = header, q = p->succ; p != trailer; p = q, q = p->succ) {
+        p->pred = q; //自前向后，依次颠倒各节点的前驱指针
+    }
+    trailer->pred = NULL; //单独设置尾节点的前驱指针
+    for (p = header, q = p->pred; p != trailer; p = q, q = p->pred) {
+        q->succ = p; //自前向后，依次颠倒各节点的后继指针
+    }
+    header->succ = NULL;   //单独设置头节点的后继指针
+    swap(header, trailer); //头、尾节点互换
 }
 
 #endif
