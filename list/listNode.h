@@ -11,8 +11,8 @@ template <typename T> struct ListNode {
     ListNodePosi(T) succ; //后继
     //构造函数
     ListNode() {} //针对header和trailer的构造
-    ListNode(T e, ListNodePosi(T) p = NULL,
-             ListNodePosi(T) s = NULL) //默认构造器
+    ListNode(T e, ListNodePosi(T) p = nullptr,
+             ListNodePosi(T) s = nullptr) //默认构造器
         : data(e), pred(p), succ(s) {}
     //操作接口
     ListNodePosi(T) insertAsPred(T const &e); //靠近当前节点之前插入新节点
