@@ -32,8 +32,37 @@ bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检�
     return S.empty(); //整个表达式扫描后，整个栈还残留（左）括号，则不匹配，否则（栈空）匹配
 }
 
-bool recursive_paren(const char exp[], int lo, int hi) {
-    // TODO
+void trim(const char exp[], int &lo, int &hi) { //删除exp[lo, hi]不含括号的最长前缀、后缀
+    while ((lo <= hi) && (exp[lo] != '(') && (exp[lo] != ')'))
+        lo++;
+    while ((lo <= hi) && (exp[hi] != '(') && (exp[hi] != ')'))
+        hi--;
+}
+
+int divide(const char exp[], int lo, int hi) { //切分exp[lo, hi]，使exp匹配当且仅当子表达式匹配
+    int mi = lo;
+    int crc = 1;
+    while ((0 < crc) && (++mi < hi)) {
+        if (exp[mi] == ')')
+            crc--;
+        if (exp[mi] == '(')
+            crc++;
+    }
+    return mi;
+}
+
+bool recursive_paren(const char exp[], int lo, int hi) { //括号匹配，递归版本
+    trim(exp, lo, hi);
+    if (lo > hi)
+        return true;
+    if (exp[lo] != '(')
+        return false;
+    if (exp[hi] != ')')
+        return false;
+    int mi = divide(exp, lo, hi);
+    if (mi > hi)
+        return false;
+    return recursive_paren(exp, lo + 1, mi - 1) && recursive_paren(exp, mi + 1, hi);
 }
 
 int main() {
@@ -42,6 +71,9 @@ int main() {
 
     cout << stack_paren(exp0, 0, 40) << endl;
     cout << stack_paren(exp1, 0, 39) << endl;
+
+    cout << recursive_paren(exp0, 0, 40) << endl;
+    cout << recursive_paren(exp1, 0, 39) << endl;
 
     return 0;
 }
