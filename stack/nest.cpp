@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检查，兼顾三种括号
+bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检查, 兼顾三种括号
     Stack<char> S;                                   //使用栈记录已发现但尚未匹配的左括号
     for (int i = lo; i < hi; i++) {                  //逐一检查当前字符
         switch (exp[i]) {
@@ -13,7 +13,7 @@ bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检�
             case '{':
                 S.push(exp[i]); //左括号入栈
                 break;
-            case ')': //右括号若与栈顶失配，则表达式必不匹配
+            case ')': //右括号若与栈顶失配, 则表达式必不匹配
                 if ((S.empty()) || ('(' != S.pop()))
                     return false;
                 break;
@@ -28,7 +28,7 @@ bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检�
             default: break; //非括号字符一律忽略
         }
     }
-    return S.empty(); //整个表达式扫描后，整个栈还残留（左）括号，则不匹配，否则（栈空）匹配
+    return S.empty(); //整个表达式扫描后, 整个栈还残留(左)括号, 则不匹配, 否则(栈空)匹配
 }
 
 void trim(const char exp[], int &lo, int &hi) { //删除exp[lo, hi]不含括号的最长前缀、后缀
@@ -38,7 +38,7 @@ void trim(const char exp[], int &lo, int &hi) { //删除exp[lo, hi]不含括号�
         hi--;
 }
 
-int divide(const char exp[], int lo, int hi) { //切分exp[lo, hi]，使exp匹配当且仅当子表达式匹配
+int divide(const char exp[], int lo, int hi) { //切分exp[lo, hi], 使exp匹配当且仅当子表达式匹配
     int mi = lo;
     int crc = 1;
     while ((0 < crc) && (++mi < hi)) {
@@ -50,7 +50,7 @@ int divide(const char exp[], int lo, int hi) { //切分exp[lo, hi]，使exp匹�
     return mi;
 }
 
-bool recursive_paren(const char exp[], int lo, int hi) { //括号匹配，递归版本
+bool recursive_paren(const char exp[], int lo, int hi) { //括号匹配, 递归版本
     trim(exp, lo, hi);
     if (lo > hi)
         return true;

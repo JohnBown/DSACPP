@@ -1,7 +1,7 @@
 #ifndef STACK_LIST_H
 #define STACK_LIST_H
 
-#include "../list/list.h" //以列表为基类，派生出栈模版类
+#include "../list/list.h" //以列表为基类, 派生出栈模版类
 
 template <typename T> class Stack : public List<T> { //将列表的首/末作为栈底/顶
   public:

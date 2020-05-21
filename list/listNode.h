@@ -21,7 +21,7 @@ template <typename T> struct ListNode {
 
 template <typename T>
 ListNodePosi(T) ListNode<T>::insertAsPred(
-    T const &e) { //将e紧靠当前节点之前，插入当前节点所属列表（设有哨兵头节点header）
+    T const &e) { //将e紧靠当前节点之前, 插入当前节点所属列表(设有哨兵头节点header)
     ListNodePosi(T) x = new ListNode(e, pred, this); //创建新节点
     pred->succ = x;                                  //设置正向链接
     pred = x;                                        //设置正向链接
@@ -30,7 +30,7 @@ ListNodePosi(T) ListNode<T>::insertAsPred(
 
 template <typename T>
 ListNodePosi(T) ListNode<T>::insertAsSucc(
-    T const &e) { //将e紧靠当前节点之后，插入当前节点所属列表（设有哨兵尾节点trailer）
+    T const &e) { //将e紧靠当前节点之后, 插入当前节点所属列表(设有哨兵尾节点trailer)
     ListNodePosi(T) x = new ListNode(e, this, succ); //创建新节点
     succ->pred = x;                                  //设置正向链接
     succ = x;                                        //设置正向链接

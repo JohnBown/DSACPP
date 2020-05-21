@@ -22,7 +22,7 @@ template <typename T> class Vector { //向量模版类
 
   public:
     //构造函数
-    Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0) { //容量为c，规模为s，所有元素初始为v
+    Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0) { //容量为c, 规模为s, 所有元素初始为v
         _elem = new T[_capacity = c];
         for (_size = 0; _size < s; _size++) {
             _elem[_size] = v;
@@ -56,8 +56,8 @@ template <typename T> class Vector { //向量模版类
     int deduplicate();                                   //无序向量去重
     int uniquify();                                      //有序向量去重
     //遍历
-    void traverse(void (*)(T &));                 //遍历（使用函数指针，只读或局部性修改）
-    template <typename VST> void traverse(VST &); //遍历（使用函数对象，可全局性修改）
+    void traverse(void (*)(T &));                 //遍历(使用函数指针, 只读或局部性修改)
+    template <typename VST> void traverse(VST &); //遍历(使用函数对象, 可全局性修改)
 };
 
 template <typename T> void Vector<T>::copyFrom(T const *A, Rank lo, Rank hi) { //复制数组区间[lo, hi)
@@ -81,11 +81,11 @@ template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> const &V) { //�
     if (_elem)
         delete[] _elem; //释放原有内容
     copyFrom(V._elem, 0, V.size());
-    return *this; //返回当前对象的引用，以便链式赋值
+    return *this; //返回当前对象的引用, 以便链式赋值
 }
 
-template <typename T> void Vector<T>::expand() { //向量空间不足时，扩容
-    if (_size < _capacity)                       //尚未满员，不必扩容
+template <typename T> void Vector<T>::expand() { //向量空间不足时, 扩容
+    if (_size < _capacity)                       //尚未满员, 不必扩容
         return;
     if (_capacity < DEFAULT_CAPACITY) //不低于最小容量
         _capacity = DEFAULT_CAPACITY;
@@ -114,13 +114,13 @@ template <typename T> void Vector<T>::shrink() { //装填因子过小时压缩�
 
 template <typename T> Rank Vector<T>::find(T const &e, Rank lo, Rank hi) const {
     while ((lo < hi--) && (e != _elem[hi])) {
-    };         //从后向前查找，当同时多个命中时，自动返回秩最大者
-    return hi; //若hi < lo，则意味着失败
+    };         //从后向前查找, 当同时多个命中时, 自动返回秩最大者
+    return hi; //若hi < lo, 则意味着失败
 }
 
 template <typename T> Rank Vector<T>::insert(Rank r, T const &e) { //插入e为秩r
-    expand();                                                      //若有必要，扩容
-    for (int i = _size; r < i; i--) //自后向前，后继元素顺次后移一个单元
+    expand();                                                      //若有必要, 扩容
+    for (int i = _size; r < i; i--) //自后向前, 后继元素顺次后移一个单元
         _elem[i] = _elem[i - 1];
     _elem[r] = e; //插入新元素e
     _size++;      //更新容量
@@ -138,8 +138,8 @@ template <typename T> int Vector<T>::remove(Rank lo, Rank hi) { //区间删除
         return 0;
     while (hi < _size) //[hi, _size)顺次前移hi - lo个单元
         _elem[lo++] = _elem[hi++];
-    _size = lo;     //更新规模，直接丢弃尾部[lo, _size = hi)区间
-    shrink();       //若有必要，则缩容
+    _size = lo;     //更新规模, 直接丢弃尾部[lo, _size = hi)区间
+    shrink();       //若有必要, 则缩容
     return hi - lo; //返回被删除元素的数目
 }
 
@@ -147,18 +147,18 @@ template <typename T> int Vector<T>::deduplicate() { //删除无序向量中重�
     int oldSize = _size;                             //记录原规模
     Rank i = 1;
     while (i < _size)                                 //自前向后逐一考察各元素
-        (find(_elem[i], 0, i) < 0) ? i++ : remove(i); //如果命中，删除_elem[i]；否则i++
+        (find(_elem[i], 0, i) < 0) ? i++ : remove(i); //如果命中, 删除_elem[i]；否则i++
     return oldSize - _size;                           //返回被删除的元素总数
 }
 
 template <typename T> int Vector<T>::uniquify() { //有序向量重复元素剔除算法
-    int i = 0, j = 0;               //不变性：[0, i]无重复，[i+1, j]必然与前区间重复
-    while (++j < _size) {           //逐一扫面，直至末元素
+    int i = 0, j = 0;               //不变性：[0, i]无重复, [i+1, j]必然与前区间重复
+    while (++j < _size) {           //逐一扫面, 直至末元素
         if (_elem[i] != _elem[j]) { //跳过雷同者
-            _elem[++i] = _elem[j];  //发现不同，更新i的位置
+            _elem[++i] = _elem[j];  //发现不同, 更新i的位置
         }
     }
-    _size = ++i;  //区间为左闭右开，所以你为++i
+    _size = ++i;  //区间为左闭右开, 所以你为++i
     shrink();     //直接剔除尾部多余元素
     return j - i; //返回被删除原属
 }
@@ -176,13 +176,13 @@ void Vector<T>::traverse(VST &visit) { //借助函数对象机制
 }
 
 template <typename T> static Rank binSearch(T *A, T const &e, Rank lo, Rank hi) {
-    while (lo < hi) {                        //一次比较，两个分支
+    while (lo < hi) {                        //一次比较, 两个分支
         Rank mi = (lo + hi) >> 1;            //以中点为轴点
         (e < A[mi]) ? hi = mi : lo = mi + 1; //[lo, mi)或(mi, hi)
     }
-    return --lo; //循环结束时，lo为大于e的元素的最小秩，故lo -
+    return --lo; //循环结束时, lo为大于e的元素的最小秩, 故lo -
                  // 1即不大于e的元素的最大秩
-} //有多元素命中时，总能保证返回秩最大者；查找失败时，能够返回失败的位置
+} //有多元素命中时, 总能保证返回秩最大者；查找失败时, 能够返回失败的位置
 
 #include "../fibonacci/Fib.h"
 template <typename T> static Rank fibSearch(T *A, T const &e, Rank lo, Rank hi) {
@@ -214,8 +214,8 @@ template <typename T> static void swap(T &a, T &b) { //交换
 }
 
 template <typename T> Rank Vector<T>::bubble(Rank lo, Rank hi) {
-    Rank last = lo;                         //最右侧的相邻逆序对的秩，初始为[lo-1, lo]
-    while (++lo < hi) {                     //区间[1, _size)，逐一检查
+    Rank last = lo;                         //最右侧的相邻逆序对的秩, 初始为[lo-1, lo]
+    while (++lo < hi) {                     //区间[1, _size), 逐一检查
         if (_elem[lo - 1] > _elem[lo]) {    //发现相邻逆序对
             last = lo;                      //更新last
             swap(_elem[lo - 1], _elem[lo]); //交换
@@ -226,7 +226,7 @@ template <typename T> Rank Vector<T>::bubble(Rank lo, Rank hi) {
 
 template <typename T> void Vector<T>::bubbleSort(Rank lo, Rank hi) { //向量冒泡排序算法
     while (lo < (hi = bubble(lo, hi))) {
-    } //如果数组后缀部分有序，那么只迭代无序部分，即[lo, last]
+    } //如果数组后缀部分有序, 那么只迭代无序部分, 即[lo, last]
 }
 
 template <typename T> Rank Vector<T>::max(Rank lo, Rank hi) { //在[lo, hi]找出最大值
@@ -245,14 +245,14 @@ template <typename T> void Vector<T>::selectionSort(Rank lo, Rank hi) { //向量
 }
 
 template <typename T> void Vector<T>::insertionSort(Rank lo, Rank hi) { //向量插入排序算法
-    for (int i = lo; i < hi; i++) {             //在区间[lo, hi)上，正向进行迭代
-        T key = _elem[i];                       //取出此轮插入的元素，防止覆盖
+    for (int i = lo; i < hi; i++) {             //在区间[lo, hi)上, 正向进行迭代
+        T key = _elem[i];                       //取出此轮插入的元素, 防止覆盖
         int j = i - 1;                          //索引j从右向左依次进行比较
-        while ((j >= lo) && (_elem[j] > key)) { //保证稳定性，查找出不大于key的最大位置
+        while ((j >= lo) && (_elem[j] > key)) { //保证稳定性, 查找出不大于key的最大位置
             _elem[j + 1] = _elem[j];            //还未查找成功
             j--;                                //向右平移你覆盖
         }
-        _elem[j + 1] = key; //找到时插入key，key为最小值，插入lo的位置
+        _elem[j + 1] = key; //找到时插入key, key为最小值, 插入lo的位置
     }
 }
 
@@ -260,13 +260,13 @@ template <typename T> void Vector<T>::merge(Rank lo, Rank mi, Rank hi) {
     T *A = _elem + lo; // A[0, hi - lo) = _elem[lo, hi)
     int lb = mi - lo;
     T *B = new T[lb];              // B[0, lb) = _elem[lo, mi)
-    for (int i = 0; i < lb; i++) { //拷贝B的副本，C不需要拷贝
+    for (int i = 0; i < lb; i++) { //拷贝B的副本, C不需要拷贝
         B[i] = A[i];
     }
     int lc = hi - mi;
     T *C = _elem + mi; // C[0, lc) = _elem[mi, hi)
 
-    for (Rank i = 0, j = 0, k = 0; (j < lb) || (k < lc);) { //初始化，A[i] = min(B[j], C[k])
+    for (Rank i = 0, j = 0, k = 0; (j < lb) || (k < lc);) { //初始化, A[i] = min(B[j], C[k])
         if ((j < lb) && ((lc <= k) || (B[j] <= C[k])))
             A[i++] = B[j++];
         if ((k < lc) && ((lb <= j) || (C[k] < B[j])))

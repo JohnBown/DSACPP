@@ -1,7 +1,7 @@
 #ifndef STACK_VECTOR_H
 #define STACK_VECTOR_H
 
-#include "../vector/vector.h" //以向量为基类，派生出栈模版类
+#include "../vector/vector.h" //以向量为基类, 派生出栈模版类
 
 template <typename T> class Stack : public Vector<T> { //将向量的首/末端作为栈底/顶
   public:
