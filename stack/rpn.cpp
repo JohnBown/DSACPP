@@ -139,7 +139,7 @@ float evaluate(char *S, char *&RPN) { //对(已剔除空白格的)表达式S求�
                     optr.pop(); //脱括号并接收下一个字符
                     S++;
                     break;
-                case '>': { //栈顶运算符优先级更高时, 可实施相应的计算, 并将结果重新入栈
+                case '>': { //栈顶运算符优先级更高时, 可实施相应计算, 并将结果重新入栈
                     char op = optr.pop();                     //栈顶运算符出栈
                     append(RPN, op);                          //并续接至RPN末尾
                     if ('!' == op) {                          //若属于一元运算符
