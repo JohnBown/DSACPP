@@ -78,8 +78,7 @@ template <typename T> const T &Vector<T>::operator[](Rank r) const { //限右值
 }
 
 template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> const &V) { //重载赋值运算符
-    if (_elem)
-        delete[] _elem; //释放原有内容
+    if (_elem) delete[] _elem;                                              //释放原有内容
     copyFrom(V._elem, 0, V.size());
     return *this; //返回当前对象的引用, 以便链式赋值
 }
@@ -134,9 +133,8 @@ template <typename T> T Vector<T>::remove(Rank r) { //删除秩为r的元素
 }
 
 template <typename T> int Vector<T>::remove(Rank lo, Rank hi) { //区间删除
-    if (lo == hi)                                               //单独处理退化情况
-        return 0;
-    while (hi < _size) //[hi, _size)顺次前移hi - lo个单元
+    if (lo == hi) return 0;                                     //单独处理退化情况
+    while (hi < _size)                                          //[hi, _size)顺次前移hi - lo个单元
         _elem[lo++] = _elem[hi++];
     _size = lo;     //更新规模, 直接丢弃尾部[lo, _size = hi)区间
     shrink();       //若有必要, 则缩容
@@ -267,10 +265,8 @@ template <typename T> void Vector<T>::merge(Rank lo, Rank mi, Rank hi) {
     T *C = _elem + mi; // C[0, lc) = _elem[mi, hi)
 
     for (Rank i = 0, j = 0, k = 0; (j < lb) || (k < lc);) { //初始化, A[i] = min(B[j], C[k])
-        if ((j < lb) && ((lc <= k) || (B[j] <= C[k])))
-            A[i++] = B[j++];
-        if ((k < lc) && ((lb <= j) || (C[k] < B[j])))
-            A[i++] = C[k++];
+        if ((j < lb) && ((lc <= k) || (B[j] <= C[k]))) A[i++] = B[j++];
+        if ((k < lc) && ((lb <= j) || (C[k] < B[j]))) A[i++] = C[k++];
     }
 
     delete[] B; //释放临时空间B

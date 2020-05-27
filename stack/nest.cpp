@@ -14,16 +14,13 @@ bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检�
                 S.push(exp[i]); //左括号入栈
                 break;
             case ')': //右括号若与栈顶失配, 则表达式必不匹配
-                if ((S.empty()) || ('(' != S.pop()))
-                    return false;
+                if ((S.empty()) || ('(' != S.pop())) return false;
                 break;
             case ']':
-                if ((S.empty()) || ('[' != S.pop()))
-                    return false;
+                if ((S.empty()) || ('[' != S.pop())) return false;
                 break;
             case '}':
-                if ((S.empty()) || ('{' != S.pop()))
-                    return false;
+                if ((S.empty()) || ('{' != S.pop())) return false;
                 break;
             default: break; //非括号字符一律忽略
         }
@@ -42,25 +39,19 @@ int divide(const char exp[], int lo, int hi) { //切分exp[lo, hi], 使exp匹配
     int mi = lo;
     int crc = 1;
     while ((0 < crc) && (++mi < hi)) {
-        if (exp[mi] == ')')
-            crc--;
-        if (exp[mi] == '(')
-            crc++;
+        if (exp[mi] == ')') crc--;
+        if (exp[mi] == '(') crc++;
     }
     return mi;
 }
 
 bool recursive_paren(const char exp[], int lo, int hi) { //括号匹配, 递归版本
     trim(exp, lo, hi);
-    if (lo > hi)
-        return true;
-    if (exp[lo] != '(')
-        return false;
-    if (exp[hi] != ')')
-        return false;
+    if (lo > hi) return true;
+    if (exp[lo] != '(') return false;
+    if (exp[hi] != ')') return false;
     int mi = divide(exp, lo, hi);
-    if (mi > hi)
-        return false;
+    if (mi > hi) return false;
     return recursive_paren(exp, lo + 1, mi - 1) && recursive_paren(exp, mi + 1, hi);
 }
 

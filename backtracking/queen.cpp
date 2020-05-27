@@ -32,8 +32,7 @@ void display(int N, Stack<Queen> &solu, Queen &q) { //混乱代码, 可以画棋
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++)
             printf("%c|", board[i][j]);
-        if (i < N - 1)
-            printf("\n|");
+        if (i < N - 1) printf("\n|");
     }
     printf("\n\n");
 }

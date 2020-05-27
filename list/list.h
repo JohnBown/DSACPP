@@ -45,7 +45,7 @@ template <typename T> class List {
     ListNodePosi(T) insertB(ListNodePosi(T) p, T const &e); //将e当作p的前驱插入(Before)
     T remove(ListNodePosi(T) p);                            //删除合法节点p, 返回其数值
     void sort(ListNodePosi(T) p, int n);                    //列表区间排序
-    void sort() { sort(first(), _size); }                     //列表整体排序
+    void sort() { sort(first(), _size); }                   //列表整体排序
     int deduplicate();                                      //无序去重
     int uniquify();                                         //有序去重
     void reverse();                                         //前后倒置
@@ -112,7 +112,7 @@ ListNodePosi(T) List<T>::find(T const &e, int n, ListNodePosi(T) p) const {
 
 template <typename T> //有序列表哪你节点p(可能是trailer)对n个(真)前驱中, 找到不大于e的最后者
 ListNodePosi(T) List<T>::search(T const &e, int n, ListNodePosi(T) p) const {
-    while (0 <= n--) {                 //对于p的最近的n个前驱, 从右向左逐个比较
+    while (0 <= n--) {                //对于p的最近的n个前驱, 从右向左逐个比较
         if ((p = p->pred)->data <= e) //直至命中、数值越界或范围哦越界
             break;
     }
@@ -260,8 +260,8 @@ template <typename T> void List<T>::reverse() { //前后倒置. 共计三种实�
     for (p = header, q = p->pred; p != trailer; p = q, q = p->pred) {
         q->succ = p; //自前向后, 依次颠倒各节点的后继指针
     }
-    header->succ = nullptr;   //单独设置头节点的后继指针
-    swap(header, trailer); //头、尾节点互换
+    header->succ = nullptr; //单独设置头节点的后继指针
+    swap(header, trailer);  //头、尾节点互换
 }
 
 #endif
