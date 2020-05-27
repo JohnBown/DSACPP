@@ -133,7 +133,7 @@ void displayLaby() { //画迷宫
     }
 }
 
-int main() { //代码有个bug, 回溯已被标记为ROUTE的路径, 游标会乱飞. 我也不会改, 头发都掉光了.
+int main() { //代码有个bug, 回溯已被标记为ROUTE的路径, 发生: malloc error.
     srand((unsigned int)time(NULL));
     while (true) {
         randLaby();
