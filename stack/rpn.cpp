@@ -86,9 +86,9 @@ float calcu(char op, float a, float b) { //执行二元运算
 void append(char *&rpn, float opnd) { //将操作数接至RPN末尾
     char buf[64];
     if (opnd != (float)(int)opnd) {
-        sprintf(buf, "%.2f \0", opnd);
+        sprintf(buf, "%.2f ", opnd);
     } else {
-        sprintf(buf, "%d \0", (int)opnd);
+        sprintf(buf, "%d ", (int)opnd);
     }
     rpn = (char *)realloc(rpn, sizeof(char) * (strlen(rpn) + strlen(buf) + 1));
     strcat(rpn, buf);
