@@ -1,8 +1,9 @@
-#include "../stack/stackVector.h"
-
-#include <iostream>
 #include <stdio.h>
 #include <time.h>
+
+#include <iostream>
+
+#include "../stack/stackVector.h"
 
 using namespace std;
 
@@ -41,19 +42,19 @@ inline Cell *advance(Cell *cell) { //从当前位置转入相邻格点
     Cell *next;
     switch (cell->outgoing) {
         case EAST:
-            next = cell + 1;
+            next           = cell + 1;
             next->incoming = WEST; //向东
             break;
         case SOUTH:
-            next = cell + LABY_MAX;
+            next           = cell + LABY_MAX;
             next->incoming = NORTH; //向南
             break;
         case WEST:
-            next = cell - 1;
+            next           = cell - 1;
             next->incoming = EAST; //向西
             break;
         case NORTH:
-            next = cell - LABY_MAX;
+            next           = cell - LABY_MAX;
             next->incoming = SOUTH; //向北
             break;
         default: exit(-1);
@@ -62,12 +63,12 @@ inline Cell *advance(Cell *cell) { //从当前位置转入相邻格点
 }
 
 bool labyrinth(Cell Laby[LABY_MAX][LABY_MAX], Cell *s, Cell *t) { //迷宫寻径算法: 从s到t的通路
-    if ((AVAILABLE != s->status) || (AVAILABLE != t->status)) {   //退化情况
+    if ((AVAILABLE != s->status) || (AVAILABLE != t->status)) { //退化情况
         return false;
     }
     Stack<Cell *> path; //用栈记录通路
     s->incoming = UNKNOWN;
-    s->status = ROUTE;
+    s->status   = ROUTE;
     path.push(s); //起点入栈
     do {          //从起点出发不断试探&回溯, 直到抵达终点, 或者穷尽所有可能
         Cell *c = path.top(); //检查当前位置(栈顶)
@@ -77,11 +78,11 @@ bool labyrinth(Cell Laby[LABY_MAX][LABY_MAX], Cell *s, Cell *t) { //迷宫寻径
         }
         if (NO_WAY <= (c->outgoing)) { //若所有方向都已尝试过
             c->status = BACKTRACKED;   //则向后回溯一步
-            c = path.pop();
+            c         = path.pop();
         } else { //否则, 向前试探一步
             path.push(c = advance(c));
             c->outgoing = UNKNOWN;
-            c->status = ROUTE;
+            c->status   = ROUTE;
         }
     } while (!path.empty());
     return false;
@@ -91,11 +92,11 @@ void randLaby() { //随机一个迷宫
     labySize = LABY_MAX / 2 + rand() % (LABY_MAX / 2);
     for (int i = 0; i < labySize; i++) {
         for (int j = 0; j < labySize; j++) {
-            laby[i][j].x = i;
-            laby[i][j].y = j;
+            laby[i][j].x        = i;
+            laby[i][j].y        = j;
             laby[i][j].incoming = UNKNOWN;
             laby[i][j].outgoing = UNKNOWN;
-            laby[i][j].status = WALL;
+            laby[i][j].status   = WALL;
         }
     }
     for (int i = 1; i < labySize - 1; i++) {
@@ -103,10 +104,10 @@ void randLaby() { //随机一个迷宫
             if (rand() % 4) laby[i][j].status = AVAILABLE;
         }
     }
-    startCell = &laby[rand() % (labySize - 2) + 1][rand() % (labySize - 2) + 1];
-    goalCell = &laby[rand() % (labySize - 2) + 1][rand() % (labySize - 2) + 1];
+    startCell         = &laby[rand() % (labySize - 2) + 1][rand() % (labySize - 2) + 1];
+    goalCell          = &laby[rand() % (labySize - 2) + 1][rand() % (labySize - 2) + 1];
     startCell->status = AVAILABLE;
-    goalCell->status = AVAILABLE;
+    goalCell->status  = AVAILABLE;
 }
 
 void displayLaby() { //画迷宫
@@ -123,12 +124,10 @@ void displayLaby() { //画迷宫
         }
     }
     labyy[startCell->x][startCell->y] = 's';
-    labyy[goalCell->x][goalCell->y] = 't';
+    labyy[goalCell->x][goalCell->y]   = 't';
 
     for (int i = 0; i < labySize; i++) {
-        for (int j = 0; j < labySize; j++) {
-            printf("%c", labyy[i][j]);
-        }
+        for (int j = 0; j < labySize; j++) { printf("%c", labyy[i][j]); }
         printf("\n");
     }
 }

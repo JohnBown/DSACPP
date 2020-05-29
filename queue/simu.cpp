@@ -24,7 +24,7 @@ void simulate(int nWin, int servTime) { //按指定窗口数, 服务总时间模
     for (int now = 0; now < servTime; now++) {            //在服务时间消耗结束之前
         if (rand() % (1 + nWin)) {                        //新顾客以nWin / (1 + nWin)概率到达
             Customer c;
-            c.time = 1 + rand() % 98;
+            c.time   = 1 + rand() % 98;
             c.window = bestWindow(windows, nWin); //插入最佳(最短)服务窗口
             windows[c.window].enqueue(c);
         }

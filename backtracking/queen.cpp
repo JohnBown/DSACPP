@@ -1,11 +1,12 @@
-#include "../stack/stackVector.h"
 #include <iostream>
+
+#include "../stack/stackVector.h"
 
 using namespace std;
 
 bool IS_SHOW = true; //是否打印棋盘
 
-int nSolu = 0;  //解的总数
+int nSolu  = 0; //解的总数
 int nCheck = 0; //尝试的总数
 
 struct Queen { //皇后类
@@ -14,8 +15,8 @@ struct Queen { //皇后类
     bool operator==(Queen const &q) const { //重载判等操作符, 以检测不同皇后间可能发生冲突
         return (x == q.x)                   //行冲突
                || (y == q.y)                //列冲突
-               || (x + y == q.x + q.y)      //正对角线冲突
-               || (x - y == q.x - q.y);     //反对角线冲突
+               || (x + y == q.x + q.y)  //正对角线冲突
+               || (x - y == q.x - q.y); //反对角线冲突
     }
     bool operator!=(Queen const &q) const { return !(*this == q); } //重载不等操作符
 };
@@ -23,24 +24,21 @@ struct Queen { //皇后类
 void display(int N, Stack<Queen> &solu, Queen &q) { //混乱代码, 可以画棋盘
     char board[N][N];
     for (int i = 0; i < N; i++)
-        for (int j = 0; j < N; j++)
-            board[i][j] = ' ';
+        for (int j = 0; j < N; j++) board[i][j] = ' ';
     board[q.x][q.y] = 'q';
-    for (int i = 0; i < solu.size(); i++)
-        board[solu[i].x][solu[i].y] = '#';
+    for (int i = 0; i < solu.size(); i++) board[solu[i].x][solu[i].y] = '#';
     printf("|");
     for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++)
-            printf("%c|", board[i][j]);
+        for (int j = 0; j < N; j++) printf("%c|", board[i][j]);
         if (i < N - 1) printf("\n|");
     }
     printf("\n\n");
 }
 
 void placeQueens(int N) { // N皇后算法(迭代版);采用试探/回溯的策略, 借助栈记录查找结果
-    Stack<Queen> solu;    //存放(部分)解的栈
-    Queen q(0, 0);        //从原点位置出发
-    do {                  //反复试探, 回溯
+    Stack<Queen> solu;                                 //存放(部分)解的栈
+    Queen q(0, 0);                                     //从原点位置出发
+    do {                                               //反复试探, 回溯
         if (N <= solu.size() || N <= q.y) {            //若已出界, 则
             q = solu.pop();                            //回溯一行
             q.y++;                                     //并继续试探下一列

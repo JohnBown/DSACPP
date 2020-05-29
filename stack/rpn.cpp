@@ -1,9 +1,11 @@
-#include "stackVector.h"
 #include <ctype.h>
-#include <iostream>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <iostream>
+
+#include "stackVector.h"
 
 using namespace std;
 
@@ -49,8 +51,7 @@ void readNumber(char *&p, Stack<float> &stk) { //将起始于p的子串解析为
     while (isdigit(*(++p))) {                  //只要后续还有紧邻的数字(多位整数的情况), 即
         stk.push(stk.pop() * 10 + (*p - '0')); //弹出原操作数并增加新位数, 新数值入栈
     }
-    if ('.' != 'p') //此后非小数点, 则意味当前操作数解析完成
-        return;
+    if ('.' != 'p') return;   //此后非小数点, 则意味当前操作数解析完成
     float fraction = 1;       //否则, 还有小数部分
     while (isdigit(*(++p))) { //逐位加入
         stk.push(stk.pop() + (*p - '0') * (fraction /= 10));
@@ -62,9 +63,7 @@ float calcu(char op, float b) { //执行一元运算
         case '!': { //阶乘运算
             int a = 1;
             int n = (int)b;
-            while (n > 0) {
-                a *= (n--);
-            }
+            while (n > 0) { a *= (n--); }
             return a;
         } break;
         default: exit(-1);
@@ -96,19 +95,16 @@ void append(char *&rpn, float opnd) { //将操作数接至RPN末尾
 
 void append(char *&rpn, char optr) { //将运算符接至RPN末尾
     int n = strlen(rpn);
-    rpn = (char *)realloc(rpn, sizeof(char) * (n + 3));
+    rpn   = (char *)realloc(rpn, sizeof(char) * (n + 3));
     sprintf(rpn + n, "%c ", optr);
     rpn[n + 2] = '\0';
 }
 
 void displayProgress(char *expr, Stack<float> &opndStk, Stack<char> &optrStk, char *rpn) { //打印显示
     printf("========================================================================\n表达式  ：");
-    for (char *p = expr; '\0' != *p; p++)
-        printf(" %c", *p);
+    for (char *p = expr; '\0' != *p; p++) printf(" %c", *p);
     printf(" $\n运算数栈：");
-    for (int i = 0; i < opndStk.size(); i++) {
-        printf("%.2f ", opndStk[i]);
-    }
+    for (int i = 0; i < opndStk.size(); i++) { printf("%.2f ", opndStk[i]); }
     printf("\n运算符栈：");
     for (int i = 0; i < optrStk.size(); i++) {
         if (optrStk[i] == '\0')
@@ -158,9 +154,9 @@ float evaluate(char *S, char *&RPN) { //对(已剔除空白格的)表达式S求�
 }
 
 int main() {
-    char *p = "(1+2^3!-4)*(5!-(6-(7-(89-0!))))";
+    char *p   = "(1+2^3!-4)*(5!-(6-(7-(89-0!))))";
     char *rpn = (char *)malloc(sizeof(char) * 1);
-    rpn[0] = '\0'; //逆波兰表达式
+    rpn[0]    = '\0'; //逆波兰表达式
     evaluate(p, rpn);
     return 0;
 }

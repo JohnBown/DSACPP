@@ -1,5 +1,6 @@
-#include <cstdio>
 #include <math.h>
+
+#include <cstdio>
 
 #include "../stack/stackVector.h"
 
@@ -22,7 +23,8 @@ void solve(int n) {
                 if ((solu.size() == 4)) { //每达到四分解
                     counts[sum]++;        //统计数字加一
                     if (sum == n) {       //对n的情况, 输出分解式子
-                        printf("%d = %d^2 + %d^2 + %d^2 + %d^2\n", n, solu[0], solu[1], solu[2], solu[3]);
+                        printf("%d = %d^2 + %d^2 + %d^2 + %d^2\n", n, solu[0], solu[1], solu[2],
+                               solu[3]);
                     }
                 }
             } else { // q <= N && sum + q*q >n
@@ -34,7 +36,5 @@ void solve(int n) {
 
 int main() {
     solve(4);
-    for (int i = 0; i < 101; i++) {
-        printf("n: %d, 有%d组\n", i, counts[i]);
-    }
+    for (int i = 0; i < 101; i++) { printf("n: %d, 有%d组\n", i, counts[i]); }
 }

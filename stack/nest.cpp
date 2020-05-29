@@ -29,14 +29,12 @@ bool stack_paren(const char exp[], int lo, int hi) { //表达式括号匹配检�
 }
 
 void trim(const char exp[], int &lo, int &hi) { //删除exp[lo, hi]不含括号的最长前缀、后缀
-    while ((lo <= hi) && (exp[lo] != '(') && (exp[lo] != ')'))
-        lo++;
-    while ((lo <= hi) && (exp[hi] != '(') && (exp[hi] != ')'))
-        hi--;
+    while ((lo <= hi) && (exp[lo] != '(') && (exp[lo] != ')')) lo++;
+    while ((lo <= hi) && (exp[hi] != '(') && (exp[hi] != ')')) hi--;
 }
 
 int divide(const char exp[], int lo, int hi) { //切分exp[lo, hi], 使exp匹配当且仅当子表达式匹配
-    int mi = lo;
+    int mi  = lo;
     int crc = 1;
     while ((0 < crc) && (++mi < hi)) {
         if (exp[mi] == ')') crc--;

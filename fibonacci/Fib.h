@@ -9,8 +9,7 @@ class Fib { // Fibonacci数列类
     Fib(int n) { //初始化不小于n的最小Fibonacci项
         f = 1;
         g = 0;
-        while (g < n)
-            next();
+        while (g < n) next();
     }
     int get() { return g; } //获取当前Fibonacci项, O(1)时间
     int next() {            //转至下一Fibonacci项, O(1)时间

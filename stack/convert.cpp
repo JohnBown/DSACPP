@@ -12,9 +12,9 @@ void convert(Stack<char> &S, int n, int base) { //整数n的1<base<=16进制打�
 }
 
 int main() {
-    int n = 2013;  //待转化的10进制数
-    int base = 5;  // base为目标进制
-    Stack<char> S; //用栈记录转化得到的各数位
+    int n    = 2013; //待转化的10进制数
+    int base = 5;    // base为目标进制
+    Stack<char> S;   //用栈记录转化得到的各数位
     convert(S, n, base);
     while (!S.empty()) { //逆序输出栈内数位, 即真确结果
         printf("%c", (S.pop()));
