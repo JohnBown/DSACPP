@@ -90,4 +90,36 @@ template <typename Tv, typename Te> void Graph<Tv, Te>::bfs(int s) { //广度优
     } while (s != (v = (++v % n)));                   //按序号检查, 故不重不漏
 }
 
+template <typename Tv, typename Te>
+void Graph<Tv, Te>::DFS(int v, int& clock) { //深度优先搜索算法(单个连通域)
+    dTime(v)  = ++clock;
+    status(v) = DISCOVERED;                                 //发现当前顶点v
+    for (int u = firstNbr(v); - 1 < u; u = nextNbr(v, u)) { //枚举v的所有邻居u
+        switch (status(u)) {                                //并视其状态分别处理
+            case UNDISCOVERED: // u尚未发现, 意味着支撑树可以此次拓展
+                type(v, u) = TREE;
+                parent(u)  = v;
+                DFS(u, clock);
+                break;
+            case DISCOVERED: // u已经发现但尚未访问完毕, 应属被后代指向但祖先
+                type(v, u) = BACKWARD;
+                break;
+            default: // u已访问完, 则视承袭关系分别前向边或跨边
+                type(v, u) = (dTime(v) < dTime(u)) ? FORWARD : CROSS;
+                break;
+        }
+    }
+    status(v) = VISITED; //至此, 当前顶点v方告访问完毕
+    fTime(v)  = ++clock;
+}
+
+template <typename Tv, typename Te> void Graph<Tv, Te>::dfs(int s) { //深度优先搜索算法(全图)
+    reset();                                                         //初始化
+    int clock = 0;
+    int v     = s;
+    do {
+        if (UNDISCOVERED == status(v)) DFS(v, clock); //一旦遇到尚未发现的顶点, 从该点出发DFS
+    } while (s != (v = (++v % n)));                   //按序号检查, 故不重不漏
+}
+
 #endif
