@@ -1,7 +1,7 @@
+#include "binNode.h" //引入二叉树节点类
+
 #ifndef BIN_TREE_H
 #define BIN_TREE_H
-
-#include "binNode.h" //引入二叉树节点类
 
 template <typename T> class BinTree { //二叉树模版类
   protected:
