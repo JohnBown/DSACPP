@@ -1,3 +1,6 @@
+#ifndef ENTRY_H
+#define ENTRY_H
+
 template <typename K, typename V> struct Entry {                   //词条模版类
     K key;                                                         //关键码
     V value;                                                       //数值
@@ -8,3 +11,5 @@ template <typename K, typename V> struct Entry {                   //词条模�
     bool operator==(Entry<K, V> const& e) { return key == e.key; } //比较器: 等于
     bool operator!=(Entry<K, V> const& e) { return key != e.key; } //比较器: 不等于
 };
+
+#endif
