@@ -18,8 +18,8 @@ template <typename T> class BST : public BinTree<T> { //由BinTree派生BST模�
     virtual BinNodePosi(T) insert(const T& e);   //插入
     virtual bool remove(const T& e);             //删除
     // DSA
-    void stretchToLPath() { stretchByZag(_root); } //借助zag旋转, 转化为左向单链
-    void stretchToRPath() { stretchByZig(_root); } //借助zig旋转, 转化为右向单链
+    void stretchToLPath() { stretchByZag(this->_root); } //借助zag旋转, 转化为左向单链
+    void stretchToRPath() { stretchByZig(this->_root); } //借助zig旋转, 转化为右向单链
 };
 
 template <typename T> //在以v为根的(AVL, SPLAY, rbTree等)BST子树中查找关键码e
@@ -30,14 +30,14 @@ template <typename T> //在以v为根的(AVL, SPLAY, rbTree等)BST子树中查�
 }
 
 template <typename T> BinNodePosi(T) & BST<T>::search(const T& e) { //在BST中查找关键码e
-    return searchIn(_root, e, _hot = nullptr); //返回咪表节点位置的引用, 以便后序插入/删除操作
+    return searchIn(this->_root, e, _hot = nullptr); //返回咪表节点位置的引用, 以便后序插入/删除操作
 }
 
 template <typename T> BinNodePosi(T) BST<T>::insert(const T& e) { //将关键码e插入BST树中
     BinNodePosi(T)& x = search(e);
     if (x) return x;             //确认目标不存在
     x = new BinNode<T>(e, _hot); //创建新节点x: 以e为关键码, 以_hot为父
-    _size++;                     //更新全树规模
+    this->_size++;                     //更新全树规模
     updateHeightAbove(x);        //更新x及其历代祖先的高度
     return x;                    //新插入的节点, 必为叶子
 }
@@ -69,7 +69,7 @@ template <typename T> bool BST<T>::remove(const T& e) { //从BST树中删除关�
     BinNodePosi(T)& x = search(e);
     if (!x) return false;    //确认目标存在(留意_hot的设置)
     removeAt(x, _hot);       //实施删除
-    _size--;                 //更新全树规模
+    this->_size--;                 //更新全树规模
     updateHeightAbove(_hot); //更新_hot及其历代祖先的高度(不从x更新, 因为x已经被删除了)
     return true;
 }
@@ -117,7 +117,7 @@ template <typename T> BinNodePosi(T) BST<T>::rotateAt(BinNodePosi(T) v) { // v�
         }
     }
 
-    return nullptr
+    return nullptr;
 }
 
 template <typename T> void stretchByZag(BinNodePosi(T) & x) { //通过zAg旋转调整, 将子树x拉伸成最左侧通路
