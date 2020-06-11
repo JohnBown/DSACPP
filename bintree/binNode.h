@@ -1,8 +1,8 @@
 #include "../queue/queueList.h"
 #include "../stack/stackVector.h"
 
-#ifndef BIN_NODE
-#define BIN_NODE
+#ifndef BIN_NODE_H
+#define BIN_NODE_H
 
 #define __max(a, b) (((a) > (b)) ? (a) : (b))
 #define __min(a, b) (((a) < (b)) ? (a) : (b))
