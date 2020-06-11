@@ -3,10 +3,6 @@
 #ifndef AVL_H
 #define AVL_H
 
-#define Balanced(x) (stature((x).lc) == stature((x).rc))
-#define BalFac(x) (stature((x).lc) - stature((x).rc))
-#define AvlBalanced(x) ((-2 < BalFac(x)) && (BalFac(x) < 2))
-
 //在左右孩子中取更高者, 左右孩子等高, 取与父亲同侧者(zIg-zIg或zAg-zAg)
 #define tallerChild(x)                                          \
     (stature((x)->lc) > stature((x)->rc) ? (x)->rc : (x)->lc    \
