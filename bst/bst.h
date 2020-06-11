@@ -69,4 +69,50 @@ template <typename T> bool BST<T>::remove(const T& e) { //从BST树中删除关�
     return true;
 }
 
+template <typename T>
+BinNodePosi(T) BST<T>::connect34( //按照 "3 + 4" 结构, 联接3个节点及4棵子树
+    BinNodePosi(T) a, BinNodePosi(T) b, BinNodePosi(T) c,                         // 3个节点
+    BinNodePosi(T) T0, BinNodePosi(T) T1, BinNodePosi(T) T2, BinNodePosi(T) T3) { // 4棵子树
+    a->lc = T0;
+    if (T0) T0->parent = a;
+    a->rc = T1;
+    if (T1) T1->parent = a;
+    updateHeight(a);
+    c->lc = T2;
+    if (T2) T2->parent = c;
+    c->rc = T3;
+    if (T3) T3->parent = c;
+    updateHeight(c);
+    b->lc     = a;
+    a->parent = b;
+    b->rc     = c;
+    c->parent = b;
+    updateHeight(b);
+    return b; //返回根节点的位置
+}
+
+template <typename T> BinNodePosi(T) BST<T>::rotateAt(BinNodePosi(T) v) { // v为非空孙辈节点
+    BinNodePosi(T) p = v->parent; //视v, p和g相对位置分四种情况
+    BinNodePosi(T) g = p->parent;
+    if (IsLChild(*p)) {     // zIg
+        if (IsLChild(*v)) { // zIg-zIg
+            p->parent = g->parent;
+            return connect34(v, p, g, v->lc, v->rc, p->rc, g->rc);
+        } else { // zIg-zAg
+            v->parent = g->parent;
+            return connect34(p, v, g, p->lc, v->lc, v->rc, g->rc);
+        }
+    } else {                // zAg
+        if (IsRChild(*v)) { // zAg-zAg
+            p->parent = g->parent;
+            return connect34(g, p, v, g->lc, p->lc, v->lc, v->rc);
+        } else { // zAg-zIg
+            v->parent = g->parent;
+            return connect34(g, v, p, g->lc, v->lc, v->rc, p->rc);
+        }
+    }
+
+    return nullptr
+}
+
 #endif
