@@ -10,11 +10,16 @@ template <typename T> class BST : public BinTree<T> { //由BinTree派生BST模�
         BinNodePosi(T), BinNodePosi(T), BinNodePosi(T), // 3个节点
         BinNodePosi(T), BinNodePosi(T), BinNodePosi(T), BinNodePosi(T)); // 4棵子树
     BinNodePosi(T) rotateAt(BinNodePosi(T) x); //对x及其父亲, 祖父做统一旋转调整
+    void stretchByZag(BinNodePosi(T) & x);     //通过zAg旋转调整, 将子树x拉伸成最左侧通路
+    void stretchByZig(BinNodePosi(T) & x);     //通过zIg旋转调整, 将子树x拉伸成最右侧通路
 
   public:
     virtual BinNodePosi(T) & search(const T& e); //查找
     virtual BinNodePosi(T) insert(const T& e);   //插入
     virtual bool remove(const T& e);             //删除
+    // DSA
+    void stretchToLPath() { stretchByZag(_root); } //借助zag旋转, 转化为左向单链
+    void stretchToRPath() { stretchByZig(_root); } //借助zig旋转, 转化为右向单链
 };
 
 template <typename T> //在以v为根的(AVL, SPLAY, rbTree等)BST子树中查找关键码e
@@ -113,6 +118,26 @@ template <typename T> BinNodePosi(T) BST<T>::rotateAt(BinNodePosi(T) v) { // v�
     }
 
     return nullptr
+}
+
+template <typename T> void stretchByZag(BinNodePosi(T) & x) { //通过zAg旋转调整, 将子树x拉伸成最左侧通路
+    BinNodePosi(T) p = x;
+    while (p->rc) p = p->rc;        //最大节点, 必须是子树最终的根
+    while (x->lc) x = x->lc;        //转至最左侧通路的末端
+    for (; x != p; x = x->parent) { //若右子树已空, 则上升一层
+        while (x->rc)               //否则, 反复地
+            x->zag();               //以x为轴做zAg操作
+    }                               //直至抵达子树的根
+}
+
+template <typename T> void stretchByZig(BinNodePosi(T) & x) { //通过zIg旋转调整, 将子树x拉伸成最右侧通路
+    BinNodePosi(T) v = x;
+    while (v->lc) v = v->lc;        //最大节点, 必须是子树最终的根
+    while (x->rc) x = x->rc;        //转至最右侧通路的末端
+    for (; x != v; x = x->parent) { //若左子树已空, 则上升一层
+        while (x->lc)               //否则, 反复地
+            x->zig();               //以x为轴左zIg操作
+    }                               //直至抵达子树的根
 }
 
 #endif
