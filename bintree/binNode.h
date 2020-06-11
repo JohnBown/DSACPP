@@ -7,6 +7,7 @@
 #define __max(a, b) (((a) > (b)) ? (a) : (b))
 #define __min(a, b) (((a) < (b)) ? (a) : (b))
 
+// BASIC
 #define IsRoot(x) (!((x).parent))
 #define IsLChild(x) (!IsRoot(x) && (&(x) == (x).parent->lc))
 #define IsRChild(x) (!IsRoot(x) && (&(x) == (x).parent->rc))
@@ -20,6 +21,16 @@
 #define sibling(p) (IsLChild(*(p)) ? (p)->parent->rc : (p)->parent->lc)                         //兄弟
 #define uncle(x) (IsLChild(*((x)->parent)) ? (x)->parent->parent->rc : (x)->parent->parent->lc) //叔叔
 #define FromParentTo(x) (IsRoot(x) ? _root : (IsLChild(x) ? (x).parent->lc : (x).parent->rc)) //来自父亲的引用
+
+// AVL
+#define Balanced(x) (stature((x).lc) == stature((x).rc))
+#define BalFac(x) (stature((x).lc) - stature((x).rc))
+#define AvlBalanced(x) ((-2 < BalFac(x)) && (BalFac(x) < 2))
+
+#define HeightUpdated(x) ((x).height == 1 + __max(stature((x).lc), stature((x).rc)))
+
+// RedBlack
+// TODO
 
 #define BinNodePosi(T) BinNode<T>*         //节点位置
 #define stature(p) ((p) ? p->height : -1)  //节点高度(空树高度为-1)
@@ -52,6 +63,9 @@ template <typename T> struct BinNode {
     //比较器, 判等器
     bool operator<(BinNode const& bn) { return data < bn.data; }   //小于
     bool operator==(BinNode const& bn) { return data == bn.data; } //等于
+    // DSA
+    BinNodePosi(T) zag(); //逆时针旋转
+    BinNodePosi(T) zig(); //顺时针旋转
 };
 
 template <typename T> int BinNode<T>::size() { //统计当前节点后代总数, 即为其根的子树规模
@@ -271,6 +285,46 @@ template <typename T> template <typename VST> void BinNode<T>::travLevel(VST& vi
         if (HasLChild(*x)) Q.enqueue(x->lc); //左孩子入队
         if (HasRChild(*x)) Q.enqueue(x->rc); //右孩子入队
     }
+}
+
+template <typename T> BinNodePosi(T) BinNode<T>::zag() { //逆时针旋转
+    BinNodePosi(T) rChild = rc;
+    rChild->parent        = this->parent;
+    if (rChild->parent) ((this == rChild->parent->lc) ? rChild->parent->lc : rChild->parent->rc) = rChild;
+    rc = rChild->lc;
+    if (rc) rc->parent = this;
+    rChild->lc   = this;
+    this->parent = rChild;
+    // update heights
+    height         = 1 + __max(stature(lc), stature(rc));
+    rChild->height = 1 + __max(stature(rChild->lc), stature(rChild->rc));
+    for (BinNodePosi(T) x = rChild->parent; x; x->parent) {
+        if (HeightUpdated(*x))
+            break;
+        else
+            x->height = 1 + __max(stature(x->lc), stature(x->rc));
+    }
+    return rChild;
+}
+
+template <typename T> BinNodePosi(T) BinNode<T>::zig() { //顺时针旋转
+    BinNodePosi(T) lChild = lc;
+    lChild->parent        = this->parent;
+    if (lChild->parent) ((this == lChild->parent->rc) ? lChild->parent->rc : lChild->parent->lc) = lChild;
+    lc = lChild->rc;
+    if (lc) lc->parent = this;
+    lChild->rc   = this;
+    this->parent = lChild;
+    // update height
+    height         = 1 + __max(stature(lc), stature(rc));
+    lChild->height = 1 + __max(stature(lChild->lc), stature(lChild->rc));
+    for (BinNodePosi(T) x = lChild->parent; x; x->parent) {
+        if (HeightUpdated(*x))
+            break;
+        else
+            x->height = 1 + __max(stature(x->lc), stature(x->rc));
+    }
+    return lChild;
 }
 
 #endif
