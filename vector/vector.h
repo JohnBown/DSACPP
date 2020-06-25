@@ -11,14 +11,15 @@ template <typename T> class Vector { //向量模版类
     T *_elem;                                    //数据区
     void copyFrom(T const *A, Rank lo, Rank hi); //复制数组区间[lo, hi)
     void expand();                               //空间不足时扩容
-    void shrink();                        //(装填因子: _size / _capacity)过小时压缩向量所占空间
-    Rank bubble(Rank lo, Rank hi);        //扫描交换
-    void bubbleSort(Rank lo, Rank hi);    //起泡排序算法
-    Rank max(Rank lo, Rank hi);           //选取最大元素
-    void selectionSort(Rank lo, Rank hi); //选择排序算法
-    void insertionSort(Rank lo, Rank hi); //插入排序算法
-    void merge(Rank lo, Rank mi, Rank hi); // 归并算法
+    void shrink();                         //(装填因子: _size/_capacity)过小时压缩向量所占空间
+    Rank bubble(Rank lo, Rank hi);         //扫描交换
+    void bubbleSort(Rank lo, Rank hi);     //起泡排序算法
+    Rank max(Rank lo, Rank hi);            //选取最大元素
+    void selectionSort(Rank lo, Rank hi);  //选择排序算法
+    void insertionSort(Rank lo, Rank hi);  //插入排序算法
+    void merge(Rank lo, Rank mi, Rank hi); //归并算法
     void mergeSort(Rank lo, Rank hi);      //归并排序算法
+    void heapSort(Rank lo, Rank hi);       //堆排序算法
 
   public:
     //构造函数
@@ -256,11 +257,20 @@ template <typename T> void Vector<T>::mergeSort(Rank lo, Rank hi) {
     merge(lo, mi, hi);       //归并
 }
 
+#include "../pq_complheap/pq_complHeap.h"
+template <typename T> void Vector<T>::heapSort(Rank lo, Rank hi) {
+    PQ_ComplHeap<T> H(_elem + lo, hi - lo); //将待排序区间建成一个完全二叉堆, O(n)
+    while (!H.empty()) {          //反复地摘除最大元素并归入已排序地后缀, 直至堆空
+        _elem[--hi] = H.delMax(); //等效于堆顶于末元素对换后下滤
+    }
+}
+
 template <typename T> void Vector<T>::sort(Rank lo, Rank hi) {
     return bubbleSort(lo, hi); //起泡排序算法
     // return mergeSort(lo, hi);     //归并排序算法
     // return selectionSort(lo, hi); //选择排序算法
     // return insertionSort(lo, hi); //插入排序算法
+    // return heapSort(lo, hi); //堆排序算法
 }
 
 #endif
