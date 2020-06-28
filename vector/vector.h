@@ -5,6 +5,11 @@ typedef int Rank;
 #define DEFAULT_CAPACITY 3 //默认初试容量
 
 template <typename T> class Vector { //向量模版类
+  private:
+    Rank partition_A(Rank lo, Rank hi); //轴点构造算法(版本A)
+    Rank partition_B(Rank lo, Rank hi); //轴点构造算法(版本B)
+    Rank partition_C(Rank lo, Rank hi); //轴点构造算法(版本C)
+
   protected:
     Rank _size;                                  //规模
     int _capacity;                               //容量
@@ -20,6 +25,9 @@ template <typename T> class Vector { //向量模版类
     void merge(Rank lo, Rank mi, Rank hi); //归并算法
     void mergeSort(Rank lo, Rank hi);      //归并排序算法
     void heapSort(Rank lo, Rank hi);       //堆排序算法
+    Rank partition(Rank lo, Rank hi);      //轴点构造算法
+    void quickSort(Rank lo, Rank hi);      //快速排序算法
+    void shellSort(Rank lo, Rank hi);      //希尔排序算法
 
   public:
     //构造函数
@@ -249,28 +257,94 @@ template <typename T> void Vector<T>::merge(Rank lo, Rank mi, Rank hi) {
     delete[] B; //释放临时空间B
 }
 
-template <typename T> void Vector<T>::mergeSort(Rank lo, Rank hi) {
-    if (hi - lo < 2) return; //单元素区间自然有序
-    Rank mi = (lo + hi) / 2; //以中点为界限
-    mergeSort(lo, mi);       //递归
-    mergeSort(mi, hi);       //递归
-    merge(lo, mi, hi);       //归并
+template <typename T> void Vector<T>::mergeSort(Rank lo, Rank hi) { //向量归并排序算法
+    if (hi - lo < 2) return;                                        //单元素区间自然有序
+    Rank mi = (lo + hi) / 2;                                        //以中点为界限
+    mergeSort(lo, mi);                                              //递归
+    mergeSort(mi, hi);                                              //递归
+    merge(lo, mi, hi);                                              //归并
 }
 
 #include "../pq_complheap/pq_complHeap.h"
-template <typename T> void Vector<T>::heapSort(Rank lo, Rank hi) {
+template <typename T> void Vector<T>::heapSort(Rank lo, Rank hi) { //向量堆排序算法
     PQ_ComplHeap<T> H(_elem + lo, hi - lo); //将待排序区间建成一个完全二叉堆, O(n)
     while (!H.empty()) {          //反复地摘除最大元素并归入已排序地后缀, 直至堆空
         _elem[--hi] = H.delMax(); //等效于堆顶于末元素对换后下滤
     }
 }
 
-template <typename T> void Vector<T>::sort(Rank lo, Rank hi) {
-    return bubbleSort(lo, hi); //起泡排序算法
+#include <stdlib.h>
+template <typename T> Rank Vector<T>::partition_A(Rank lo, Rank hi) { //轴点构造算法(版本A)
+    swap(_elem[lo], _elem[lo + rand() % (hi - lo + 1)]);              //任选一个元素与首元素交换
+    T pivot = _elem[lo]; //以首元素为候选轴点: 经以上交换, 等效于随机选取
+    while (lo < hi) {    //从向量对两端交替地向中间扫描
+        while ((lo < hi) && (pivot <= _elem[hi])) hi--; //在不小于pivot的前提下, 向左拓展右端子向量
+        _elem[lo] = _elem[hi];                          //小于pivot者归入左侧子序列
+        while ((lo < hi) && (_elem[lo] <= pivot)) lo++; //在不大于pivot的前提下, 向右拓展左端子向量
+        _elem[hi] = _elem[lo];                          //大于pivot者归入右侧子序列
+    }
+    _elem[lo = pivot]; //将备份的轴点记录置于前/后子向量之间
+    return lo;         //返回轴点的秩
+}
+
+template <typename T> Rank Vector<T>::partition_B(Rank lo, Rank hi) { //轴点构造算法(版本B)
+    swap(_elem[lo], _elem[lo + rand() % (hi - lo + 1)]);              //任选一个元素与首元素交换
+    T pivot = _elem[lo]; //以首元素为候选轴点: 经以上交换, 等效于随机选取
+    while (lo < hi) {    //从向量对两端交替地向中间扫描
+        while (lo < hi) {
+            if (pivot < _elem[hi]) {     //在大于pivot的前提下
+                hi--;                    //向左拓展右端子向量
+            } else {                     //直至遇到不大于pivot者
+                _elem[lo++] = _elem[hi]; //将其归入左端子向量
+                break;
+            }
+        }
+        while (lo < hi) {
+            if (_elem[lo] < pivot) {     //在小于pivot的前提下
+                lo++;                    //向右拓展左端子向量
+            } else {                     //直至遇到不小于pivot者
+                _elem[hi--] = _elem[lo]; //将其归入右端子向量
+                break;
+            }
+        }
+    }
+    _elem[lo] = pivot; //将备份的轴点记录置于前/后子向量之间
+    return lo;         //返回轴点的秩
+}
+
+template <typename T> Rank Vector<T>::partition_C(Rank lo, Rank hi) { //轴点构造算法(版本C)
+    swap(_elem[lo], _elem[lo + rand() % (hi - lo + 1)]);              //任选一个元素与首元素交换
+    T pivot = _elem[lo]; //以首元素为候选轴点: 经以上交换, 等效于随机选取
+    int mi  = lo;
+    for (int k = lo + 1; k <= hi; k++) { //自左向右扫描
+        if (_elem[k] < pivot) {          //若当前元素_elem[k]小于pivot, 则
+            swap(_elem[++mi], _elem[k]); //将_elem[k]交换至原mi之后, 使L子序列向右扩展
+        }
+    }
+    swap(_elem[lo], _elem[mi]); //候选轴点归位
+    return mi;                  //返回轴点的秩
+}
+
+template <typename T> Rank Vector<T>::partition(Rank lo, Rank hi) { //轴点构造算法
+    // return partition_A(lo, hi); //轴点构造算法(版本A)
+    // return partition_B(lo, hi); //轴点构造算法(版本B)
+    return partition_C(lo, hi); //轴点构造算法(版本C)
+}
+
+template <typename T> void Vector<T>::quickSort(Rank lo, Rank hi) { //向量快速排序算法
+    if (hi - lo < 2) return;                                        //单元素区间自然有序, 否则...
+    Rank mi = partition(lo, hi - 1);                                //在[lo, hi-1]内构造轴点
+    quickSort(lo, mi);                                              //对前缀递归排序
+    quickSort(mi + 1, hi);                                          //对后缀递归排序
+}
+
+template <typename T> void Vector<T>::sort(Rank lo, Rank hi) { //向量排序算法
+    // return bubbleSort(lo, hi); //起泡排序算法
     // return mergeSort(lo, hi);     //归并排序算法
     // return selectionSort(lo, hi); //选择排序算法
     // return insertionSort(lo, hi); //插入排序算法
     // return heapSort(lo, hi); //堆排序算法
+    return quickSort(lo, hi); //快速排序算法
 }
 
 #endif
