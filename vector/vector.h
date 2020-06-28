@@ -338,6 +338,20 @@ template <typename T> void Vector<T>::quickSort(Rank lo, Rank hi) { //向量快�
     quickSort(mi + 1, hi);                                          //对后缀递归排序
 }
 
+template <typename T> void Vector<T>::shellSort(Rank lo, Rank hi) { //向量希尔排序算法(神仙代码)
+    for (int d = 0x3FFFFFFF; 0 < d; d >>= 1) { // PS Sequence: {1, 3, 7, 15, ..., 1073741823}
+        for (int j = lo + d; j < hi; j++) {    //**到这儿就看不懂了: for each j in [lo+d, hi)
+            T x   = _elem[j];
+            int i = j - d;
+            while (lo <= i && _elem[i] > x) {
+                _elem[i + d] = _elem[i];
+                i -= d;
+            }
+            _elem[i + d] = x;
+        }
+    }
+}
+
 template <typename T> void Vector<T>::sort(Rank lo, Rank hi) { //向量排序算法
     // return bubbleSort(lo, hi); //起泡排序算法
     // return mergeSort(lo, hi);     //归并排序算法
@@ -345,6 +359,7 @@ template <typename T> void Vector<T>::sort(Rank lo, Rank hi) { //向量排序算
     // return insertionSort(lo, hi); //插入排序算法
     // return heapSort(lo, hi); //堆排序算法
     return quickSort(lo, hi); //快速排序算法
+    // return shellSort(lo, hi); //希尔排序算法
 }
 
 #endif
