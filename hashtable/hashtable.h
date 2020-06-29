@@ -70,7 +70,7 @@ template <typename K, typename V> Hashtable<K, V>::~Hashtable() { //析构前释
 }
 
 template <typename K, typename V> int Hashtable<K, V>::probe4Hit(const K& k) {
-    int r = hashcode(k) % M; //从起始桶(按除余确定)出发
+    int r = hashCode(k) % M; //从起始桶(按除余确定)出发
     //沿查找链线性试探: 跳过所有冲突的桶, 以及带懒惰删除标记的桶
     while ((ht[r] && (k != ht[r]->key)) || (!ht[r] && lazilyRemoved(r))) r = (r + 1) % M;
     return r; //调用者根据ht[r]是否为空, 即可判断查找是否成功
