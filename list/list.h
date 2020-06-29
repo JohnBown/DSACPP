@@ -32,6 +32,7 @@ template <typename T> class List {
     T &operator[](Rank r) const;                           //重载, 支持寻秩访问(效率低)
     ListNodePosi(T) first() const { return header->succ; } //首节点位置
     ListNodePosi(T) last() const { return trailer->pred; } //末节点位置
+    bool valid(ListNodePosi(T) p) { return p && (trailer != p) && (header != p); } //判断位置p是否对外合法
     ListNodePosi(T) find(T const &e) const { return find(e, _size, trailer); }     //无序列表查找
     ListNodePosi(T) find(T const &e, int n, ListNodePosi(T) p) const;              //无序区间查找
     ListNodePosi(T) search(T const &e) const { return search(e, _size, trailer); } //有序列表查找
@@ -44,11 +45,12 @@ template <typename T> class List {
     ListNodePosi(T) insertA(ListNodePosi(T) p, T const &e); //将e当作p的后继插入(After)
     ListNodePosi(T) insertB(ListNodePosi(T) p, T const &e); //将e当作p的前驱插入(Before)
     T remove(ListNodePosi(T) p);                            //删除合法节点p, 返回其数值
-    void sort(ListNodePosi(T) p, int n);                    //列表区间排序
-    void sort() { sort(first(), _size); }                   //列表整体排序
-    int deduplicate();                                      //无序去重
-    int uniquify();                                         //有序去重
-    void reverse();                                         //前后倒置
+    void merge(List<T> &L) { merge(first(), _size, L, L.first(), L._size); } //全列表归并
+    void sort(ListNodePosi(T) p, int n);                                     //列表区间排序
+    void sort() { sort(first(), _size); }                                    //列表整体排序
+    int deduplicate();                                                       //无序去重
+    int uniquify();                                                          //有序去重
+    void reverse();                                                          //前后倒置
 };
 
 template <typename T> void List<T>::init() { //列表初始化, 列表创建时调用
